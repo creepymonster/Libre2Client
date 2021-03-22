@@ -55,6 +55,7 @@ public class SensorManager: NSObject {
     
     override init() {
         super.init()
+        logger.log("Init sensor manager")
         
         managerQueue.sync {
             self.manager = CBCentralManager(delegate: self, queue: managerQueue, options: nil)
@@ -62,23 +63,27 @@ public class SensorManager: NSObject {
     }
     
     deinit {
+        logger.log("Deinit sensor manager")
+        
         sensor = nil
         delegate = nil
     }
     
     private func scanForSensor() {
         dispatchPrecondition(condition: .onQueue(managerQueue))
+        logger.log("Scan for sensor")
 
         guard manager.state == .poweredOn else {
             return
         }
         
-        manager.scanForPeripherals(withServices: sensor?.serviceCharacteristicsUuid, options: nil) //
+        manager.scanForPeripherals(withServices: sensor?.serviceCharacteristicsUuid, options: nil)
         state = .scanning
     }
     
     private func connect(_ peripheral: CBPeripheral, instantiate: Bool = false) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
+        logger.log("Connect peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         if manager.isScanning {
             manager.stopScan()
@@ -103,6 +108,8 @@ public class SensorManager: NSObject {
     }
     
     private func reconnect(delay: Double = 7) {
+        logger.log("Reconnect peripheral, with delay \(delay.description)s")
+        
         DispatchQueue.global(qos: .utility).async { [weak self] in
             Thread.sleep(forTimeInterval: delay)
             
@@ -116,6 +123,7 @@ public class SensorManager: NSObject {
     
     func disconnect() {
         dispatchPrecondition(condition: .notOnQueue(managerQueue))
+        logger.log("Disconnect peripheral")
 
         managerQueue.sync {
             if manager.isScanning {
@@ -152,7 +160,7 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Discover: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Discover peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         guard peripheral.name?.lowercased() != nil, let sensorID = UserDefaults.standard.sensorID else {
             return
@@ -165,7 +173,7 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     public func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Connect: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Connect peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         state = .connected
         peripheral.discoverServices(sensor?.serviceCharacteristicsUuid)
@@ -173,7 +181,7 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     public func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Fail to Connect: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Fail to connect peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         guard let sensorID = UserDefaults.standard.sensorID else {
             return
@@ -187,7 +195,7 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Disconnect Peripheral: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Disconnect peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         guard let sensorID = UserDefaults.standard.sensorID else {
             return
@@ -197,25 +205,27 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
             manager.connect(peripheral, options: nil)
             state = .connecting
         }
+        
+        //scanForSensor()
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Discover Services: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Discover services, for peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         sensor?.peripheral(peripheral, didDiscoverServices: error)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Discover Characteristics: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Discover characteristics, for peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         sensor?.peripheral(peripheral, didDiscoverCharacteristicsFor: service)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Update Notification State: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Update notification state, for peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
         
         state = .notifying
         sensor?.peripheral(peripheral, didUpdateNotificationStateFor: characteristic, error: error)
@@ -223,14 +233,14 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Update Value: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Update value, for peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
 
         sensor?.peripheral(peripheral, didUpdateValueFor: characteristic, error: error)
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.debug("Write Value: \(peripheral.name ?? SensorManager.unknownOutput)")
+        logger.log("Write value, for peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
 
         sensor?.peripheral(peripheral, didWriteValueFor: characteristic, error: error)
     }

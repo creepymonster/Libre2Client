@@ -42,6 +42,10 @@ public struct SensorMeasurement {
 
         self.value = Int(round((g3 - v1) / v2))
     }
+    
+    public var description: String {
+        return "\(value.description)";
+    }
 }
 
 fileprivate let t1 = [

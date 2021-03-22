@@ -17,4 +17,12 @@ public enum SensorConnectionState: String {
     case notifying      = "Notifying"
     case powerOff       = "Power Off"
     case unknown        = "Unknown"
+    
+    init() {
+        self = .unknown
+    }
+    
+    public var description: String {
+        return "\(self.rawValue)";
+    }
 }

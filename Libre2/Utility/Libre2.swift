@@ -135,11 +135,11 @@ class Libre2 {
         return result
     }
         
-    public static func parseBLEData( _ data: Data, calibration: SensorCalibration) -> (wearTimeMinutes: Int, trend: [SensorMeasurement], history: [SensorMeasurement]) {
+    public static func parseBLEData( _ data: Data, calibration: SensorCalibration) -> (wearTimeMinutes: Int, trend: [SensorMeasurement], history: [SensorMeasurement], crc: UInt16) {
         var measurementTrend: [SensorMeasurement] = []
         var measurementHistory: [SensorMeasurement] = []
         let wearTimeMinutes = Int(word(data[41], data[40]))
-        //let crc = word(data[43], data[42])
+        let crc = word(data[43], data[42])
 
         let delay = 2
         let ints = [0, 2, 4, 6, 7, 12, 15]
@@ -176,6 +176,6 @@ class Libre2 {
             }
         }
         
-        return (wearTimeMinutes, measurementTrend.sorted(by: { $0.id < $1.id }), measurementHistory.sorted(by: { $0.id < $1.id }))
+        return (wearTimeMinutes, measurementTrend.sorted(by: { $0.id < $1.id }), measurementHistory.sorted(by: { $0.id < $1.id }), crc)
     }
 }

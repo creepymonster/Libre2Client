@@ -35,4 +35,8 @@ public enum SensorRegion: String {
             self = .unknown
         }
     }
+    
+    public var description: String {
+        return "\(self.rawValue)";
+    }
 }

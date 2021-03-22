@@ -24,4 +24,8 @@ public struct SensorCalibration: Equatable, Codable {
         self.i5 = i5
         self.i6 = i6
     }
+    
+    public var description: String {
+        return "\(i1), \(i2), \(i3), \(i4), \(i5), \(i6)";
+    }
 }

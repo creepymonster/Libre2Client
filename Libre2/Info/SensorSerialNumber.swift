@@ -125,8 +125,8 @@ public struct SensorSerialNumber: CustomStringConvertible {
         let stringArray = self.uid.map({String(format: "%02X", $0)})
         return stringArray.dropFirst().reduce(stringArray.first!,  {$0 + ":" + $1} )
     }
-
+    
     public var description: String {
-        return "Uid is \(prettyUidString) and derived serial number is \(serialNumber)"
+        return "\(serialNumber)";
     }
 }

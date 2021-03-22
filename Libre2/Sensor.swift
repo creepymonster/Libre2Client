@@ -67,6 +67,8 @@ public class SensorClass {
     }
     
     func writeValueToPeripheral(_ peripheral: CBPeripheral, value: Data, type: CBCharacteristicWriteType) -> Bool {
+        logger.log("Write value to peripheral \(value.hex)")
+        
         if let characteristic = writeCharacteristic {
             peripheral.writeValue(value, for: characteristic, type: type)
             
@@ -77,10 +79,10 @@ public class SensorClass {
     }
     
     func reset() {
+        logger.log("Reset buffer")
+        
         rxBuffer = Data()
         timestampLastPacket = Date()
         resendPacketCounter = 0
-        
-        logger.log("reset state")
     }
 }

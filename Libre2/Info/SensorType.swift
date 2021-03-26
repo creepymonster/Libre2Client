@@ -80,8 +80,8 @@ public enum SensorType: String {
             return nil
         }
     }
-    
+
     public var description: String {
-        return "\(self.rawValue)";
+        return "\(self.rawValue)"
     }
 }

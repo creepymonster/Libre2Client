@@ -34,7 +34,7 @@ class PreLibre {
         let l4: UInt16 = 0x0000
 
         var result = Data()
-        
+
         for i in 0 ..< 43 {
             let i64 = UInt64(i)
             var y = word(sensorInfo[5], sensorInfo[4])

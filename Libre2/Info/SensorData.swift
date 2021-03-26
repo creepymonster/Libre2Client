@@ -34,8 +34,8 @@ public struct SensorData {
     func history(reversed: Bool = false) -> [SensorMeasurement] {
         return (reversed ? history.reversed() : history)
     }
-    
+
     public var description: String {
-        return "(\(bytes.hex))";
+        return "(\(bytes.hex))"
     }
 }

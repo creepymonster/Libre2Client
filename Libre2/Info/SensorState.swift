@@ -48,8 +48,8 @@ public enum SensorState: String, Codable {
             self = .unknown
         }
     }
-    
+
     public var description: String {
-        return "\(self.rawValue)";
+        return "\(self.rawValue)"
     }
 }

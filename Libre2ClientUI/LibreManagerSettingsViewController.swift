@@ -16,7 +16,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
     public let cgmManager: Libre2CGMManager
     public let glucoseUnit: HKUnit
     public let allowsDeletion: Bool
-
+    
     private lazy var glucoseFormatter: QuantityFormatter = {
         let formatter = QuantityFormatter()
         formatter.setPreferredNumberFormatter(for: glucoseUnit)
@@ -35,7 +35,12 @@ public class LibreManagerSettingsViewController: UITableViewController {
         self.cgmManager = cgmManager
         self.glucoseUnit = glucoseUnit
         self.allowsDeletion = allowsDeletion
+        
         super.init(style: .grouped)
+    }
+    
+    override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        tableView.reloadData()
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -86,8 +91,13 @@ public class LibreManagerSettingsViewController: UITableViewController {
         case sensorInfo
         case calibrationInfo
         case configuration
-        case rescanNfc
+        case actions
         case delete
+    }
+
+    private enum ActionsRow: Int, CaseIterable {
+        case resetConnection
+        case reloadView
     }
 
     private enum LatestReadingRow: Int, CaseIterable {
@@ -98,8 +108,6 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
     private enum SensorRow: Int, CaseIterable {
         case type
-        case id
-        case serial
         case region
         case state
         case connection
@@ -132,7 +140,10 @@ public class LibreManagerSettingsViewController: UITableViewController {
         case .calibrationInfo:
             return CalibrationRow.allCases.count
 
-        case .configuration, .rescanNfc, .delete:
+        case .actions:
+            return ActionsRow.allCases.count
+
+        case .configuration, .delete:
             return 1
 
         }
@@ -147,13 +158,13 @@ public class LibreManagerSettingsViewController: UITableViewController {
             return LocalizedString("Sensor Info")
 
         case .calibrationInfo:
-            return LocalizedString("Calibration Info")
+            return LocalizedString("Calibration")
 
         case .configuration:
             return LocalizedString("Configuration")
 
-        case .rescanNfc:
-            return " "
+        case .actions:
+            return LocalizedString("Actions")
 
         case .delete:
             return " "
@@ -202,24 +213,6 @@ public class LibreManagerSettingsViewController: UITableViewController {
             let cell = tableView.dequeueIdentifiableCell(cell: SettingsTableViewCell.self, for: indexPath)
 
             switch SensorRow(rawValue: indexPath.row)! {
-            case .id:
-                cell.textLabel?.text = LocalizedString("Sensor Id")
-
-                if let sensorID = UserDefaults.standard.sensorID {
-                    cell.detailTextLabel?.text = sensorID
-                } else {
-                    cell.detailTextLabel?.text = SettingsTableViewCell.NoValueString
-                }
-
-            case .serial:
-                cell.textLabel?.text = LocalizedString("Sensor Serial")
-
-                if let sensorSerial = UserDefaults.standard.sensorSerial {
-                    cell.detailTextLabel?.text = sensorSerial
-                } else {
-                    cell.detailTextLabel?.text = SettingsTableViewCell.NoValueString
-                }
-
             case .connection:
                 cell.textLabel?.text = LocalizedString("Sensor Connection")
 
@@ -264,6 +257,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 } else {
                     cell.detailTextLabel?.text = SettingsTableViewCell.NoValueString
                 }
+
             case .uid:
                 cell.textLabel?.text = LocalizedString("Sensor UID")
 
@@ -272,6 +266,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 } else {
                     cell.detailTextLabel?.text = SettingsTableViewCell.NoValueString
                 }
+
             case .patchInfo:
                 cell.textLabel?.text = LocalizedString("Sensor PatchInfo")
 
@@ -280,9 +275,9 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 } else {
                     cell.detailTextLabel?.text = SettingsTableViewCell.NoValueString
                 }
-                
-                
+
             }
+
             cell.selectionStyle = .none
 
             return cell
@@ -291,7 +286,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
             switch CalibrationRow(rawValue: indexPath.row)! {
             case .i1:
-                cell.textLabel?.text = LocalizedString("Calibration Info i1")
+                cell.textLabel?.text = LocalizedString("Calibration: i1")
 
                 if let i1 = UserDefaults.standard.sensorCalibration?.i1 {
                     cell.detailTextLabel?.text = i1.description
@@ -300,7 +295,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i2:
-                cell.textLabel?.text = LocalizedString("Calibration Info i2")
+                cell.textLabel?.text = LocalizedString("Calibration: i2")
 
                 if let i2 = UserDefaults.standard.sensorCalibration?.i2 {
                     cell.detailTextLabel?.text = i2.description
@@ -309,7 +304,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i3:
-                cell.textLabel?.text = LocalizedString("Calibration Info i3")
+                cell.textLabel?.text = LocalizedString("Calibration: i3")
 
                 if let i3 = UserDefaults.standard.sensorCalibration?.i3 {
                     cell.detailTextLabel?.text = i3.description
@@ -318,7 +313,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i4:
-                cell.textLabel?.text = LocalizedString("Calibration Info i4")
+                cell.textLabel?.text = LocalizedString("Calibration: i4")
 
                 if let i4 = UserDefaults.standard.sensorCalibration?.i4 {
                     cell.detailTextLabel?.text = i4.description
@@ -327,7 +322,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i5:
-                cell.textLabel?.text = LocalizedString("Calibration Info i5")
+                cell.textLabel?.text = LocalizedString("Calibration: i5")
 
                 if let i5 = UserDefaults.standard.sensorCalibration?.i5 {
                     cell.detailTextLabel?.text = i5.description
@@ -336,7 +331,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i6:
-                cell.textLabel?.text = LocalizedString("Calibration Info i6")
+                cell.textLabel?.text = LocalizedString("Calibration: i6")
 
                 if let i6 = UserDefaults.standard.sensorCalibration?.i6 {
                     cell.detailTextLabel?.text = i6.description
@@ -345,25 +340,33 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             }
+
             cell.selectionStyle = .none
 
             return cell
         case .configuration:
             let cell = tableView.dequeueIdentifiableCell(cell: SwitchTableViewCell.self, for: indexPath)
 
-            cell.textLabel?.text = LocalizedString("Upload Readings")
+            cell.textLabel?.text = LocalizedString("Nightscout Upload")
             cell.selectionStyle = .none
             cell.switch?.addTarget(self, action: #selector(glucoseSyncChanged(_:)), for: .valueChanged)
             cell.switch?.isOn = UserDefaults.standard.glucoseSync
 
             return cell
-        case .rescanNfc:
+        case .actions:
             let cell = tableView.dequeueIdentifiableCell(cell: TextButtonTableViewCell.self, for: indexPath)
 
-            cell.textLabel?.text = LocalizedString("Rescan NFC")
-            cell.textLabel?.textAlignment = .center
-            //cell.tintColor = .delete
-            cell.isEnabled = true
+            switch ActionsRow(rawValue: indexPath.row)! {
+            case .resetConnection:
+                cell.textLabel?.text = LocalizedString("Reset Connection")
+                cell.textLabel?.textAlignment = .center
+                cell.isEnabled = true
+                
+            case .reloadView:
+                cell.textLabel?.text = LocalizedString("Reload View")
+                cell.textLabel?.textAlignment = .center
+                cell.isEnabled = true
+            }
 
             return cell
 
@@ -393,24 +396,35 @@ public class LibreManagerSettingsViewController: UITableViewController {
             present(controller, animated: true) {
                 tableView.deselectRow(at: indexPath, animated: true)
             }
-        case .rescanNfc:
-            let rescanNfcAlert = UIAlertController(title: LocalizedString("Alert title: Rescan NFC"), message: LocalizedString("Alert message: Rescan NFC"), preferredStyle: UIAlertControllerStyle.alert)
 
-            rescanNfcAlert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action: UIAlertAction!) in
-                self.cgmManager.resetConnection()
-            }))
+        case .actions:
 
-            rescanNfcAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            switch ActionsRow(rawValue: indexPath.row)! {
+            case .resetConnection:
+                let rescanNfcAlert = UIAlertController(title: LocalizedString("Alert title: Reset Connection"), message: LocalizedString("Alert message: Reset Connection"), preferredStyle: UIAlertControllerStyle.alert)
+
+                rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Ok"), style: .default, handler: { (action: UIAlertAction!) in
+                    self.cgmManager.resetConnection()
+                    tableView.reloadData()
+                }))
+
+                rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Cancel"), style: .cancel))
+
+                present(rescanNfcAlert, animated: true) {
+                    tableView.deselectRow(at: indexPath, animated: true)
+                }
             
-            present(rescanNfcAlert, animated: true) {
-                tableView.deselectRow(at: indexPath, animated: true)
+            case .reloadView:
+                tableView.reloadData()
+                
             }
+
         case .sensorInfo, .calibrationInfo, .latestReading, .configuration:
             break
         }
+
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
 }
 
 fileprivate extension UIAlertController {

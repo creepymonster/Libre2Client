@@ -23,13 +23,13 @@ extension UInt16 {
     init(_ data: Data) {
         self = UInt16(data[data.startIndex + 1]) << 8 + UInt16(data[data.startIndex])
     }
-    
+
     var hex: String { String(format: "%04x", self) }
 }
 
 extension Data {
-    var hex: String { self.reduce("", { $0 + String(format: "%02x", $1)}) }
+    var hex: String { self.reduce("", { $0 + String(format: "%02x", $1) }) }
     var string: String { String(decoding: self, as: UTF8.self) }
-    var hexAddress: String { String(self.reduce("", { $0 + $1.hex + ":"}).dropLast(1)) }
-    var sha1: String { Insecure.SHA1.hash(data: self).makeIterator().reduce("", { $0 + String(format: "%02x", $1)}) }
+    var hexAddress: String { String(self.reduce("", { $0 + $1.hex + ":" }).dropLast(1)) }
+    var sha1: String { Insecure.SHA1.hash(data: self).makeIterator().reduce("", { $0 + String(format: "%02x", $1) }) }
 }

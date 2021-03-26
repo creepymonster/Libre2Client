@@ -96,8 +96,8 @@ public class LibreManagerSettingsViewController: UITableViewController {
     }
 
     private enum ActionsRow: Int, CaseIterable {
-        case resetConnection
         case reloadView
+        case resetConnection
     }
 
     private enum LatestReadingRow: Int, CaseIterable {
@@ -107,10 +107,10 @@ public class LibreManagerSettingsViewController: UITableViewController {
     }
 
     private enum SensorRow: Int, CaseIterable {
+        case connection
         case type
         case region
         case state
-        case connection
         case age
         case uid
         case patchInfo

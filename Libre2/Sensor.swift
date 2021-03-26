@@ -21,7 +21,7 @@ public protocol SensorProtocol {
 
     func resetConnection()
     func canSupportPeripheral(_ peripheral: CBPeripheral, _ advertisementData: [String: Any]) -> Bool
-    func setupConnection()
+    func setupConnectionIfNeeded()
     func canConnect() -> Bool
 
     func peripheral(_ peripheral: CBPeripheral)

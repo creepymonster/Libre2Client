@@ -72,7 +72,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
     
     public func finished() {
-        logger.log("finished NFC")
+        logger.log("Finished NFC")
         
         libreNFC = nil
     }
@@ -98,7 +98,9 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
         return false
     }
     
-    public func setupConnection() {
+    public func setupConnectionIfNeeded() {
+        logger.log("Setup connection")
+        
         if UserDefaults.standard.sensorUID == nil || UserDefaults.standard.sensorPatchInfo == nil || UserDefaults.standard.sensorCalibration == nil || UserDefaults.standard.sensorState == nil {
             scanNfc()
         }

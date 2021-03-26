@@ -21,6 +21,7 @@ public protocol SensorManagerDelegate: class {
 public class SensorManager: NSObject {
     private static let unknownOutput = "-"
 
+    private var stayConnected = true
     private var manager: CBCentralManager! = nil
     private let managerQueue = DispatchQueue(label: "com.libre2client.bluetooth.queue", qos: .unspecified)
 
@@ -33,8 +34,6 @@ public class SensorManager: NSObject {
             peripheral?.delegate = self
         }
     }
-
-    private var stayConnected = true
 
     public private(set) var sensor: Sensor? = nil {
         didSet {
@@ -66,21 +65,39 @@ public class SensorManager: NSObject {
         delegate = nil
     }
 
-    private func scanForSensor() {
-        dispatchPrecondition(condition: .onQueue(managerQueue))
-        logger.log("Scan for sensor")
+    private func scan() {
+        dispatchPrecondition(condition: .notOnQueue(managerQueue))
+        logger.log("Scan")
 
+        managerQueue.sync {
+            self.scanForPeripheral()
+        }
+    }
+    
+    private func scanForPeripheral() {
+        dispatchPrecondition(condition: .onQueue(managerQueue))
+        logger.log("Scan for peripheral")
+        
         guard manager.state == .poweredOn else {
-            logger.log("Scan for sensor, manager.state: \(self.manager.state.rawValue)")
             return
         }
 
         if sensor == nil {
             sensor = Libre2Direct()
         }
+        
+        sensor!.setupConnectionIfNeeded()
 
         manager.scanForPeripherals(withServices: nil, options: nil) // sensor?.serviceCharacteristicsUuid
         state = .scanning
+    }
+
+    private func scanAfterDelay() {
+        DispatchQueue.global(qos: .utility).async {
+            Thread.sleep(forTimeInterval: 30)
+
+            self.scan()
+        }
     }
 
     private func connect(_ peripheral: CBPeripheral) {
@@ -97,21 +114,7 @@ public class SensorManager: NSObject {
         state = .connecting
     }
 
-    private func reconnect(delay: Double = 7) {
-        logger.log("Reconnect, delay: \(delay.description)s")
-
-        DispatchQueue.global(qos: .utility).async { [weak self] in
-            Thread.sleep(forTimeInterval: delay)
-
-            self?.managerQueue.sync {
-                if let peripheral = self?.peripheral {
-                    self?.connect(peripheral)
-                }
-            }
-        }
-    }
-
-    func disconnect() {
+    func disconnect(stayConnected: Bool) {
         dispatchPrecondition(condition: .notOnQueue(managerQueue))
         logger.log("Disconnect peripheral")
 
@@ -124,8 +127,8 @@ public class SensorManager: NSObject {
                 manager.cancelPeripheralConnection(connection)
             }
         }
-
-        stayConnected = false
+        
+        self.stayConnected = stayConnected
     }
 }
 
@@ -136,20 +139,9 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         logger.log("Reset connection")
 
         sensor?.resetConnection()
-
-        /*
-        managerQueue.sync {
-            if manager.isScanning {
-                manager.stopScan()
-            }
-
-            if let connection = peripheral {
-                manager.cancelPeripheralConnection(connection)
-            }
-
-            scanForSensor()
-        }
-        */
+        sensor?.setupConnectionIfNeeded()
+        
+        disconnect(stayConnected: true)
     }
 
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -161,7 +153,7 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
             state = .powerOff
 
         case .poweredOn:
-            scanForSensor()
+            scanForPeripheral()
 
         default:
             if manager.isScanning {
@@ -176,12 +168,6 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         dispatchPrecondition(condition: .onQueue(managerQueue))
         logger.log("Did discover peripheral \(peripheral.name ?? SensorManager.unknownOutput)")
 
-        guard sensor?.canConnect() ?? false else {
-            sensor?.setupConnection()
-            
-            return
-        }
-        
         guard peripheral.name?.lowercased() != nil else {
             return
         }
@@ -205,9 +191,8 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         dispatchPrecondition(condition: .onQueue(managerQueue))
         logger.log("Did fail to connect, error: \(error?.localizedDescription ?? SensorManager.unknownOutput)")
 
-        if sensor?.canConnect() ?? false {
-            manager.connect(peripheral, options: nil)
-            state = .connecting
+        if stayConnected {
+            scanAfterDelay()
         }
     }
 
@@ -215,9 +200,8 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         dispatchPrecondition(condition: .onQueue(managerQueue))
         logger.log("Did disconnect peripheral, error: \(error?.localizedDescription ?? SensorManager.unknownOutput)")
 
-        if sensor?.canConnect() ?? false {
-            manager.connect(peripheral, options: nil)
-            state = .connecting
+        if stayConnected {
+            scanAfterDelay()
         }
     }
 

@@ -72,7 +72,7 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     }
 
     deinit {
-        bluetoothManager?.disconnect()
+        bluetoothManager?.disconnect(stayConnected: false)
         bluetoothManager?.delegate = nil
     }
 

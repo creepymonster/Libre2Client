@@ -48,7 +48,7 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
             delegate.delegate = newValue
         }
     }
-
+    
     public var delegateQueue: DispatchQueue! {
         get {
             return delegate.queue
@@ -159,11 +159,11 @@ extension Libre2CGMManager {
     public var connection: String? {
         return bluetoothManager?.state.rawValue
     }
-    
+
     public var identifier: String? {
         return UserDefaults.standard.sensorUID?.hex
     }
-    
+
     public var hardwareVersion: String? {
         return UserDefaults.standard.sensorType?.rawValue
     }

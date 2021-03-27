@@ -10,7 +10,7 @@ import CoreBluetooth
 import Foundation
 import UIKit
 import CoreNFC
-import Combine
+import os.log
 
 @available(iOS 14.0, *)
 public class Libre2Direct: Sensor & LibreNFCDelegate {
@@ -29,11 +29,11 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     required init() {
         super.init()
 
-        logger.log("Init sensor")
+        os_log("Init sensor", log: .sensor)
     }
 
     public func resetConnection() {
-        logger.log("Reset connection")
+        os_log("Reset connection", log: .sensor)
 
         UserDefaults.standard.sensorUID = nil
         UserDefaults.standard.sensorPatchInfo = nil
@@ -45,8 +45,8 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
         UserDefaults.standard.sensorUID = sensorUID
         UserDefaults.standard.sensorPatchInfo = patchInfo
 
-        logger.log("Received, sensorUID: \(sensorUID.hex)")
-        logger.log("Received, sensorPatchInfo: \(patchInfo.hex)")
+        os_log("Received, sensorUID: %{public}s", log: .sensor, sensorUID.hex)
+        os_log("Received, sensorPatchInfo: %{public}s", log: .sensor, patchInfo.hex)
     }
 
     public func received(fram: Data) {
@@ -59,12 +59,12 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
         UserDefaults.standard.sensorCalibration = Libre2.readFactoryCalibration(bytes: data)
         UserDefaults.standard.sensorState = SensorState(bytes: data)
 
-        logger.log("Received, calibration: \(UserDefaults.standard.sensorCalibration?.description ?? Libre2Direct.unknownOutput)")
-        logger.log("Received, state: \(UserDefaults.standard.sensorState?.description ?? Libre2Direct.unknownOutput)")
+        os_log("Received, calibration: %{public}s", log: .sensor, UserDefaults.standard.sensorCalibration?.description ?? Libre2Direct.unknownOutput)
+        os_log("Received, state: %{public}s", log: .sensor, UserDefaults.standard.sensorState?.description ?? Libre2Direct.unknownOutput)
     }
 
     public func streamingEnabled(successful: Bool) {
-        logger.log("Streaming enabled: \(successful)")
+        os_log("Streaming enabled: %{public}s", log: .sensor, successful)
 
         if successful {
             UserDefaults.standard.sensorUnlockCount = 0
@@ -72,7 +72,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
     
     public func finished() {
-        logger.log("Finished NFC")
+        os_log("Finished NFC", log: .sensor)
         
         libreNFC = nil
     }
@@ -87,9 +87,9 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
                 var foundUID = manufacturerData.subdata(in: 2..<8)
                 foundUID.append(contentsOf: [0x07, 0xe0])
 
-                logger.log("Can support peripheral, name: \(peripheral.name?.lowercased() ?? Libre2Direct.unknownOutput)")
-                logger.log("Can support peripheral, foundUID: \(foundUID.hex)")
-                logger.log("Can support peripheral, sensorUID: \(sensorUID.hex)")
+                os_log("Can support peripheral, name: %{public}s", log: .sensor, peripheral.name?.lowercased() ?? Libre2Direct.unknownOutput)
+                os_log("Can support peripheral, foundUID: %{public}s", log: .sensor, foundUID.hex)
+                os_log("Can support peripheral, sensorUID: %{public}s", log: .sensor, sensorUID.hex)
 
                 return foundUID == sensorUID && peripheral.name?.lowercased().starts(with: "abbott") ?? false
             }
@@ -99,7 +99,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
     
     public func setupConnectionIfNeeded() {
-        logger.log("Setup connection")
+        os_log("Setup connection", log: .sensor)
         
         if UserDefaults.standard.sensorUID == nil || UserDefaults.standard.sensorPatchInfo == nil || UserDefaults.standard.sensorCalibration == nil || UserDefaults.standard.sensorState == nil {
             scanNfc()
@@ -108,18 +108,18 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
 
     public func canConnect() -> Bool {
         if let _ = UserDefaults.standard.sensorUID, let _ = UserDefaults.standard.sensorPatchInfo, let _ = UserDefaults.standard.sensorCalibration, let _ = UserDefaults.standard.sensorState {
-            logger.log("Can connect: true")
+            os_log("Can connect: true", log: .sensor)
             
             return true
         }
 
-        logger.log("Can connect: false")
+        os_log("Can connect: false", log: .sensor)
         
         return false
     }
 
     public func peripheral(_ peripheral: CBPeripheral) {
-        logger.log("Did discover services")
+        os_log("Did discover services", log: .sensor)
 
         if let services = peripheral.services {
             for service in services {
@@ -129,18 +129,18 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService) {
-        logger.log("Did discover characteristics for service: \(service.uuid.uuidString)")
+        os_log("Did discover characteristics for service: %{public}s", log: .sensor, service.uuid.uuidString)
 
         if let characteristics = service.characteristics {
             for characteristic in characteristics {
                 if characteristic.uuid == readCharacteristicUuid {
-                    logger.log("Did discover characteristic: \(characteristic.uuid.uuidString)")
+                    os_log("Did discover characteristic: %{public}s", log: .sensor, characteristic.uuid.uuidString)
 
                     readCharacteristic = characteristic
                 }
 
                 if characteristic.uuid == writeCharacteristicUuid {
-                    logger.log("Did discover characteristic: \(characteristic.uuid.uuidString)")
+                    os_log("Did discover characteristic: %{public}s", log: .sensor, characteristic.uuid.uuidString)
 
                     writeCharacteristic = characteristic
                     unlock(peripheral)
@@ -150,7 +150,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic) {
-        logger.log("Update notification state, for characteristic \(characteristic.uuid.uuidString)")
+        os_log("Update notification state, for characteristic %{public}s", log: .sensor, characteristic.uuid.uuidString)
 
         reset()
     }
@@ -158,11 +158,11 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic) {
         if let value = characteristic.value {
             if value.count == 20 {
-                logger.log("Did update value for 1. block: \(value.hex)")
+                os_log("Did update value for 1. block: %{public}s", log: .sensor, value.hex)
             } else if value.count == 18 {
-                logger.log("Did update value for 2. block: \(value.hex)")
+                os_log("Did update value for 2. block: %{public}s", log: .sensor, value.hex)
             } else if value.count == 8 {
-                logger.log("Did update value for 3. block: \(value.hex)")
+                os_log("Did update value for 3. block: %{public}s", log: .sensor, value.hex)
             }
 
             // add new value to rxBuffer
@@ -182,7 +182,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
                     let measurements = Libre2.parseBLEData(decryptedBLE, calibration: sensorCalibration)
 
                     for trendMeasurement in measurements.trend {
-                        logger.log("Update value, with trend \(trendMeasurement.description)")
+                        os_log("Update value, with trend %{public}s", log: .sensor, trendMeasurement.description)
                     }
 
                     let sensorData = SensorData(bytes: decryptedBLE, sensorUID: sensorUID, patchInfo: patchInfo, calibration: sensorCalibration, wearTimeMinutes: measurements.wearTimeMinutes, trend: measurements.trend, history: measurements.history)
@@ -199,7 +199,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
 
     public func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic) {
-        logger.log("Did write value for: \(characteristic.uuid.uuidString)")
+        os_log("Did write value for: %{public}s", log: .sensor, characteristic.uuid.uuidString)
 
         if characteristic.uuid == writeCharacteristicUuid {
             peripheral.setNotifyValue(true, for: readCharacteristic!)
@@ -207,7 +207,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
 
     private func scanNfc() {
-        logger.log("Scan NFC")
+        os_log("Scan NFC", log: .sensor)
 
         if libreNFC == nil {
             libreNFC = LibreNFC(libreNFCDelegate: self)
@@ -216,7 +216,7 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
     }
 
     private func unlock(_ peripheral: CBPeripheral) {
-        logger.log("Unlock")
+        os_log("Unlock", log: .sensor)
 
         guard let sensorUID = UserDefaults.standard.sensorUID else {
             return
@@ -228,10 +228,10 @@ public class Libre2Direct: Sensor & LibreNFCDelegate {
 
         let unlockCount = (UserDefaults.standard.sensorUnlockCount ?? 0) + 1
         UserDefaults.standard.sensorUnlockCount = unlockCount
-        logger.log("Unlock, unlockCount: \(unlockCount)")
+        os_log("Unlock, unlockCount: %{public}s", log: .sensor, unlockCount.description)
 
         let unlockPayLoad = Data(Libre2.streamingUnlockPayload(sensorUID: sensorUID, info: patchInfo, enableTime: 42, unlockCount: unlockCount))
-        logger.log("Unlock, unlockPayLoad: \(unlockPayLoad.hex)")
+        os_log("Unlock, unlockPayLoad: %{public}s", log: .sensor, unlockPayLoad.hex)
 
         _ = writeValueToPeripheral(peripheral, value: unlockPayLoad, type: .withResponse)
     }

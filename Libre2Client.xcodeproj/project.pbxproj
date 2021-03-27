@@ -47,6 +47,8 @@
 		E223D49A260886DC00273607 /* SensorConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E223D498260886DC00273607 /* SensorConnectionState.swift */; };
 		E244447625E67664007D6354 /* SensorCalibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E244447525E67664007D6354 /* SensorCalibration.swift */; };
 		E2586EB426078EA800AF1CAA /* PreLibre.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2586EB326078EA800AF1CAA /* PreLibre.swift */; };
+		E26763BD260F2D8700323561 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26763BC260F2D8700323561 /* OSLog.swift */; };
+		E26763BE260F2D8700323561 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26763BC260F2D8700323561 /* OSLog.swift */; };
 		E298AD2825F2795600F739F7 /* Sensor+Libre2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298AD2725F2795600F739F7 /* Sensor+Libre2.swift */; };
 		E2A9691825F7AB5B00CA01E5 /* SensorSerialNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A9691725F7AB5B00CA01E5 /* SensorSerialNumber.swift */; };
 		E2A9694C25F7B70A00CA01E5 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E2A9694B25F7B70A00CA01E5 /* CryptoSwift */; };
@@ -119,6 +121,7 @@
 		E223D498260886DC00273607 /* SensorConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorConnectionState.swift; sourceTree = "<group>"; };
 		E244447525E67664007D6354 /* SensorCalibration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorCalibration.swift; sourceTree = "<group>"; };
 		E2586EB326078EA800AF1CAA /* PreLibre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLibre.swift; sourceTree = "<group>"; };
+		E26763BC260F2D8700323561 /* OSLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLog.swift; sourceTree = "<group>"; };
 		E298AD2725F2795600F739F7 /* Sensor+Libre2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sensor+Libre2.swift"; sourceTree = "<group>"; };
 		E2A9691725F7AB5B00CA01E5 /* SensorSerialNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorSerialNumber.swift; sourceTree = "<group>"; };
 		E2BEE45025ED393300F2EC76 /* SensorType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorType.swift; sourceTree = "<group>"; };
@@ -236,6 +239,7 @@
 				E2E5B9C6260E716E002E1BD9 /* UserDefaults.swift */,
 				E2E5B9C2260E7139002E1BD9 /* UserDefaults+Glucose.swift */,
 				0A6367F9246B77BA00C2725D /* UserDefaults+Sensor.swift */,
+				E26763BC260F2D8700323561 /* OSLog.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -432,6 +436,7 @@
 				0A6367F4246B6C6600C2725D /* TrendCalculation.swift in Sources */,
 				E2586EB426078EA800AF1CAA /* PreLibre.swift in Sources */,
 				0A7737562472AB4E00DD4CFC /* Double.swift in Sources */,
+				E26763BD260F2D8700323561 /* OSLog.swift in Sources */,
 				0A1E33D724695FA800BE6410 /* SensorManager.swift in Sources */,
 				E2BEE45125ED393300F2EC76 /* SensorType.swift in Sources */,
 				E2FAC2C225FACAFF00FC0385 /* NFC.swift in Sources */,
@@ -459,6 +464,7 @@
 				0A63681C246C9AA300C2725D /* IdentifiableClass.swift in Sources */,
 				E2FC04C6260342290011F49B /* SensorRegion.swift in Sources */,
 				0A6367FE246C3D1F00C2725D /* LibreManagerSettingsViewController.swift in Sources */,
+				E26763BE260F2D8700323561 /* OSLog.swift in Sources */,
 				0A636820246C9FFA00C2725D /* UITableView.swift in Sources */,
 				0A6367FC246C372900C2725D /* Libre2CGMManager+UI.swift in Sources */,
 				E2ACC2FC2604CE6D0057D491 /* Extensions.swift in Sources */,

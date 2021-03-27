@@ -9,6 +9,8 @@
 import Foundation
 import CoreBluetooth
 import os
+import LoopKit
+import os.log
 
 public typealias Sensor = (SensorProtocol & SensorClass)
 
@@ -32,8 +34,6 @@ public protocol SensorProtocol {
 }
 
 public class SensorClass {
-    var logger: Logger = Logger(subsystem: "Libre2Client", category: "Sensor")
-
     var readCharacteristic: CBCharacteristic?
     var writeCharacteristic: CBCharacteristic?
     var rxBuffer: Data
@@ -55,7 +55,7 @@ public class SensorClass {
     }
 
     func writeValueToPeripheral(_ peripheral: CBPeripheral, value: Data, type: CBCharacteristicWriteType) -> Bool {
-        logger.log("Write value to peripheral, value: \(value.hex)")
+        os_log("Write value to peripheral, value: %{public}s", log: .sensor, value.hex)
 
         if let characteristic = writeCharacteristic {
             peripheral.writeValue(value, for: characteristic, type: type)
@@ -67,7 +67,7 @@ public class SensorClass {
     }
 
     func reset() {
-        logger.log("Reset buffer")
+        os_log("Reset buffer")
 
         rxBuffer = Data()
         timestampLastPacket = Date()

@@ -14,8 +14,7 @@ import AudioToolbox
 struct NotificationManager {
     enum Identifier: String {
         case sensorExpire = "com.libre2client.notifications.sensorExpire"
-        case sensorDisconnect = "com.libre2client.notifications.sensorDisconnect"
-        case sensorConnect = "com.libre2client.notifications.sensorConnect"
+        case sensorConnection = "com.libre2client.notifications.sensorConnection"
     }
     
     private static func add(identifier: Identifier, content: UNMutableNotificationContent) {
@@ -44,18 +43,64 @@ struct NotificationManager {
         }
     }
     
+    public static func sendSensorConnectedNotification() {
+        ensureCanSendNotification { ensured in
+            guard ensured else {
+                return
+            }
+            
+            let notification = UNMutableNotificationContent()
+            notification.title = LocalizedString("Notification Title: Sensor connected")
+            notification.body = LocalizedString("Notification Body: Sensor connected")
+            notification.sound = .default
+            
+            add(identifier: .sensorConnection, content: notification)
+        }
+    }
+    
+    public static func sendSensorDisconnectedNotification() {
+        ensureCanSendNotification { ensured in
+            guard ensured else {
+                return
+            }
+            
+            let notification = UNMutableNotificationContent()
+            notification.title = LocalizedString("Notification Title: Sensor disconnected")
+            notification.body = LocalizedString("Notification Body: Sensor disconnected")
+            notification.sound = .default
+            
+            add(identifier: .sensorConnection, content: notification)
+        }
+    }
+    
+    public static func sendSensorDisconnectedNotification(error: String) {
+        ensureCanSendNotification { ensured in
+            guard ensured else {
+                return
+            }
+            
+            let notification = UNMutableNotificationContent()
+            notification.title = LocalizedString("Notification Title: Sensor disconnected with error")
+            notification.body = String(format: LocalizedString("Notification Body: Sensor disconnected with error %@"), error)
+            notification.sound = .default
+            notification.categoryIdentifier = "alarm"
+            
+            add(identifier: .sensorConnection, content: notification)
+        }
+    }
+    
     public static func sendSensorExpireNotificationIfNeeded(_ data: SensorData) {
         switch data.wearTimeMinutes {
         case let x where x >= 15840 && !(UserDefaults.standard.lastSensorAge ?? 0 >= 15840): // three days
-            sendSensorExpiringNotification(body: String(format: LocalizedString("Replace sensor in %1$@ days"), "3"))
+            sendSensorExpiringNotification(body: String(format: LocalizedString("Notification Body: Replace sensor in %1$@ days"), "3"))
         case let x where x >= 17280 && !(UserDefaults.standard.lastSensorAge ?? 0 >= 17280): // two days
-            sendSensorExpiringNotification(body: String(format: LocalizedString("Replace sensor in %1$@ days"), "2"))
+            sendSensorExpiringNotification(body: String(format: LocalizedString("Notification Body: Replace sensor in %1$@ days"), "2"))
         case let x where x >= 18720 && !(UserDefaults.standard.lastSensorAge ?? 0 >= 18720): // one day
-            sendSensorExpiringNotification(body: String(format: LocalizedString("Replace sensor in %1$@ day"), "1"))
+            sendSensorExpiringNotification(body: String(format: LocalizedString("Notification Body: Replace sensor in %1$@ day"), "1"))
         case let x where x >= 19440 && !(UserDefaults.standard.lastSensorAge ?? 0 >= 19440): // twelve hours
-            sendSensorExpiringNotification(body: String(format: LocalizedString("Replace sensor in %1$@ hours"), "12"))
+            sendSensorExpiringNotification(body: String(format: LocalizedString("Notification Body: Replace sensor in %1$@ hours"), "12"))
         case let x where x >= 20100 && !(UserDefaults.standard.lastSensorAge ?? 0 >= 20100): // one hour
-            sendSensorExpiringNotification(body: String(format: LocalizedString("Replace sensor in %1$@ hour"), "1"))
+            sendSensorExpiringNotification(body: String(format: LocalizedString("Notification Body: Replace sensor in %1$@ hour"), "1"))
         case let x where x >= 20160: // expired
             sendSensorExpiredNotification()
         default:
@@ -72,7 +117,7 @@ struct NotificationManager {
             }
             
             let notification = UNMutableNotificationContent()
-            notification.title = LocalizedString("Sensor ending soon")
+            notification.title = LocalizedString("Notification Title: Sensor ending soon")
             notification.body = body
             notification.sound = .default
             
@@ -87,8 +132,8 @@ struct NotificationManager {
             }
             
             let notification = UNMutableNotificationContent()
-            notification.title = LocalizedString("Sensor expired")
-            notification.body = LocalizedString("Please replace your old sensor as soon as possible")
+            notification.title = LocalizedString("Notification Title: Sensor expired")
+            notification.body = LocalizedString("Notification Body: Please replace your old sensor as soon as possible")
             notification.sound = .default
             
             add(identifier: .sensorExpire, content: notification)

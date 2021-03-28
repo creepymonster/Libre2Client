@@ -194,6 +194,9 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         
         if let error = error?.localizedDescription {
             Log.error(error, log: .sensorManager)
+            NotificationManager.sendSensorDisconnectedNotification(error: error)
+        } else {
+            NotificationManager.sendSensorDisconnectedNotification()
         }
 
         manager.connect(peripheral, options: nil)
@@ -206,10 +209,13 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         
         if let error = error?.localizedDescription {
             Log.error(error, log: .sensorManager)
+            NotificationManager.sendSensorDisconnectedNotification(error: error)
             
             manager.connect(peripheral, options: nil)
             state = .connecting
         } else if stayConnected {
+            NotificationManager.sendSensorDisconnectedNotification()
+            
             scanAfterDelay()
         }
     }
@@ -249,6 +255,8 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
             
             return
         }
+        
+        NotificationManager.sendSensorConnectedNotification()
 
         state = .notifying
         sensor?.peripheral(peripheral, didUpdateNotificationStateFor: characteristic)

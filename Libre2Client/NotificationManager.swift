@@ -14,6 +14,8 @@ import AudioToolbox
 struct NotificationManager {
     enum Identifier: String {
         case sensorExpire = "com.libre2client.notifications.sensorExpire"
+        case sensorDisconnect = "com.libre2client.notifications.sensorDisconnect"
+        case sensorConnect = "com.libre2client.notifications.sensorConnect"
     }
     
     private static func add(identifier: Identifier, content: UNMutableNotificationContent) {

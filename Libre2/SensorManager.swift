@@ -92,6 +92,8 @@ public class SensorManager: NSObject {
     }
 
     private func scanAfterDelay() {
+        Log.debug("Scan after delay", log: .sensorManager)
+        
         DispatchQueue.global(qos: .utility).async {
             Thread.sleep(forTimeInterval: 30)
 
@@ -194,9 +196,8 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
             Log.error(error, log: .sensorManager)
         }
 
-        if stayConnected {
-            scanAfterDelay()
-        }
+        manager.connect(peripheral, options: nil)
+        state = .connecting
     }
 
     public func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -205,9 +206,10 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         
         if let error = error?.localizedDescription {
             Log.error(error, log: .sensorManager)
-        }
-
-        if stayConnected {
+            
+            manager.connect(peripheral, options: nil)
+            state = .connecting
+        } else if stayConnected {
             scanAfterDelay()
         }
     }

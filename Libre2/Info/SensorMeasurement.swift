@@ -17,23 +17,23 @@ public struct SensorMeasurement {
         self.id = id
         self.date = date
 
-        let x: Double = 1000 + 71500;
-        let y: Double = 1000;
-        let ca = 0.0009180023;
-        let cb = 0.0001964561;
-        let cc = 0.0000007061775;
-        let cd = 0.00000005283566;
+        let x: Double = 1000 + 71500
+        let y: Double = 1000
+        let ca = 0.0009180023
+        let cb = 0.0001964561
+        let cc = 0.0000007061775
+        let cd = 0.00000005283566
         let rLeft = rawTemperature * x
         let rRight = rawTemperatureAdjustment + Double(calibration.i6)
 
-        let R = (rLeft / rRight) - y;
+        let R = (rLeft / rRight) - y
         let logR = log(R)
         let d = pow(logR, 3) * cd + pow(logR, 2) * cc + logR * cb + ca
 
-        let temperature = 1 / d - 273.15;
+        let temperature = 1 / d - 273.15
 
-        let g1 = 65.0 * (rawGlucose - Double(calibration.i3)) / Double(calibration.i4 - calibration.i3);
-        let g2 = pow(1.045, 32.5 - temperature);
+        let g1 = 65.0 * (rawGlucose - Double(calibration.i3)) / Double(calibration.i4 - calibration.i3)
+        let g2 = pow(1.045, 32.5 - temperature)
 
         let g3 = g1 * g2
 
@@ -42,9 +42,9 @@ public struct SensorMeasurement {
 
         self.value = Int(round((g3 - v1) / v2))
     }
-    
+
     public var description: String {
-        return "\(value.description)";
+        return "\(value.description)"
     }
 }
 
@@ -173,7 +173,7 @@ fileprivate let t1 = [
     1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
     1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
     1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3,
-];
+]
 
 fileprivate let t2 = [
     0.037744199999999999, 0.037744199999999999, 0.037744199999999999, 0.037744199999999999, 0.037744199999999999, 0.037744199999999999, 0.037744199999999999, 0.037744199999999999,
@@ -300,4 +300,4 @@ fileprivate let t2 = [
     0.12581629999999999, 0.12581629999999999, 0.12581629999999999, 0.12581629999999999, 0.12581629999999999, 0.12581629999999999, 0.12581629999999999, 0.12581629999999999, 0.12581629999999999,
     0.1270744, 0.1270744, 0.1270744, 0.1270744, 0.1270744, 0.1270744, 0.1270744, 0.1270744, 0.1270744,
     0.12834519999999999, 0.12834519999999999, 0.12834519999999999, 0.12834519999999999, 0.12834519999999999, 0.12834519999999999, 0.12834519999999999, 0.12834519999999999, 0.12834519999999999,
-];
+]

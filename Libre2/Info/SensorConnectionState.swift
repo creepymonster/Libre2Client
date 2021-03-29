@@ -9,20 +9,20 @@
 import Foundation
 
 public enum SensorConnectionState: String {
-    case unassigned     = "Unassigned"
-    case scanning       = "Scanning"
-    case disconnected   = "Disconnected"
-    case connecting     = "Connecting"
-    case connected      = "Connected"
-    case notifying      = "Notifying"
-    case powerOff       = "Power Off"
-    case unknown        = "Unknown"
-    
+    case unassigned = "Unassigned"
+    case scanning = "Scanning"
+    case disconnected = "Disconnected"
+    case connecting = "Connecting"
+    case connected = "Connected"
+    case notifying = "Notifying"
+    case powerOff = "Power Off"
+    case unknown = "Unknown"
+
     init() {
         self = .unknown
     }
-    
+
     public var description: String {
-        return "\(self.rawValue)";
+        return "\(self.rawValue)"
     }
 }

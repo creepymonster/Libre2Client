@@ -12,20 +12,20 @@ public struct SensorSerialNumber: CustomStringConvertible {
     let uid: Data
     let sensorType: SensorType?
 
-    fileprivate let lookupTable = ["0","1","2","3","4","5","6","7","8","9","A","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","T","U","V","W","X","Y","Z"]
-    
+    fileprivate let lookupTable = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "Q", "R", "T", "U", "V", "W", "X", "Y", "Z"]
+
     init?(withUID uid: Data, with sensorType: SensorType?) {
         guard uid.count == 8 else {
             return nil
         }
-        
+
         self.uid = uid
         self.sensorType = sensorType
     }
 
     // MARK: - computed properties
-    
-    var serialNumber: String  {
+
+    var serialNumber: String {
         // The serial number of the sensor can be derived from its uid.
         //
         // The numbers an letters of the serial number are coded a compressed scheme that uses only 32 numbers and letters,
@@ -71,62 +71,62 @@ public struct SensorSerialNumber: CustomStringConvertible {
         //
         //
         //   3.) Prepend "0" at the beginning an thus receive "0M00009DHCR"
-        
+
         guard uid.count == 8 else {
             return "invalid uid"
         }
-        
-        let bytes = Array(uid.reversed().suffix(6))  // 5E 90 25 00 00 A0 07 E0" -> E0 07 A0 00 00 25 90 5E -> A0 00 00 25 90 5E
+
+        let bytes = Array(uid.reversed().suffix(6)) // 5E 90 25 00 00 A0 07 E0" -> E0 07 A0 00 00 25 90 5E -> A0 00 00 25 90 5E
 
         //  A0 00 00 25 90 5E -> "M00009DHCR"
         var fiveBitsArray = [UInt8]() // Mask later with 0x1F to use only five bits
 
-        fiveBitsArray.append( bytes[0] >> 3 )
-        fiveBitsArray.append( bytes[0] << 2 + bytes[1] >> 6 )
-        fiveBitsArray.append( bytes[1] >> 1 )
-        fiveBitsArray.append( bytes[1] << 4 + bytes[2] >> 4 )
-        fiveBitsArray.append( bytes[2] << 1 + bytes[3] >> 7 )
-        fiveBitsArray.append( bytes[3] >> 2 )
-        fiveBitsArray.append( bytes[3] << 3 + bytes[4] >> 5 )
-        fiveBitsArray.append( bytes[4] )
-        fiveBitsArray.append( bytes[5] >> 3 )
-        fiveBitsArray.append( bytes[5] << 2 )
+        fiveBitsArray.append(bytes[0] >> 3)
+        fiveBitsArray.append(bytes[0] << 2 + bytes[1] >> 6)
+        fiveBitsArray.append(bytes[1] >> 1)
+        fiveBitsArray.append(bytes[1] << 4 + bytes[2] >> 4)
+        fiveBitsArray.append(bytes[2] << 1 + bytes[3] >> 7)
+        fiveBitsArray.append(bytes[3] >> 2)
+        fiveBitsArray.append(bytes[3] << 3 + bytes[4] >> 5)
+        fiveBitsArray.append(bytes[4])
+        fiveBitsArray.append(bytes[5] >> 3)
+        fiveBitsArray.append(bytes[5] << 2)
 
         var first = "0"
-        
+
         if let sensorType = sensorType {
             switch sensorType {
             case .libreProH:
                 first = "1"
-                
+
             case .libre2:
                 first = "3"
-                
+
             case .libre1, .libreUS14day:
                 first = "0"
-                
+
             default:
                 first = "0"
             }
         }
-        
+
         let serialNumber = fiveBitsArray.reduce(first, { // prepend with "0" according to step 3.)
-            $0 + lookupTable[ Int(0x1F & $1) ]  // Mask with 0x1F to only take the five relevant bits
+            $0 + lookupTable[Int(0x1F & $1)] // Mask with 0x1F to only take the five relevant bits
         })
-        
+
         return serialNumber
     }
-    
+
     var uidString: String {
         return Data(self.uid).hex
     }
-    
+
     var prettyUidString: String {
-        let stringArray = self.uid.map({String(format: "%02X", $0)})
-        return stringArray.dropFirst().reduce(stringArray.first!,  {$0 + ":" + $1} )
+        let stringArray = self.uid.map({ String(format: "%02X", $0) })
+        return stringArray.dropFirst().reduce(stringArray.first!, { $0 + ":" + $1 })
     }
-    
+
     public var description: String {
-        return "\(serialNumber)";
+        return "\(serialNumber)"
     }
 }

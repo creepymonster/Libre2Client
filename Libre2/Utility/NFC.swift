@@ -12,7 +12,6 @@ import CoreNFC
 import CryptoSwift
 
 // source : https://github.com/gui-dos/DiaBLE/tree/master/DiaBLE
-// source : https://github.com/gui-dos/DiaBLE/tree/master/DiaBLE class Sensor
 
 fileprivate struct NFCCommand {
     let code: UInt8
@@ -40,12 +39,13 @@ public protocol LibreNFCDelegate: AnyObject {
     func received(sensorUID: Data, patchInfo: Data)
     func received(fram: Data)
     func streamingEnabled(successful: Bool)
+    func finished()
 }
 
 @available(iOS 14.0, *)
 class LibreNFC: NSObject, NFCTagReaderSessionDelegate {
     private var session: NFCTagReaderSession?
-    
+
     private let nfcQueue = DispatchQueue(label: "LibreNFC.nfcQueue")
     private let accessQueue = DispatchQueue(label: "LibreNFC.accessQueue")
 
@@ -63,8 +63,14 @@ class LibreNFC: NSObject, NFCTagReaderSessionDelegate {
 
         accessQueue.async {
             self.session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: self.nfcQueue)
-            self.session?.alertMessage = "holdTopOfIphoneNearSensor"
+            self.session?.alertMessage = LocalizedString("Hold iPhone near sensor")
             self.session?.begin()
+        }
+    }
+
+    public func stopSession() {
+        accessQueue.async {
+            self.session?.invalidate()
         }
     }
 
@@ -92,9 +98,9 @@ class LibreNFC: NSObject, NFCTagReaderSessionDelegate {
 
             tag.getSystemInfo(requestFlags: [.address, .highDataRate]) { result in
                 switch result {
-                case .failure( _):
+                case .failure(_):
                     return
-                case .success( _):
+                case .success(_):
                     tag.customCommand(requestFlags: .highDataRate, customCommandCode: 0xA1, customRequestParameters: Data()) { response, error in
 
                         for i in 0 ..< requests {
@@ -144,6 +150,7 @@ class LibreNFC: NSObject, NFCTagReaderSessionDelegate {
                                                     }
 
                                                     session.invalidate()
+                                                    self.libreNFCDelegate?.finished()
                                                 }
                                             }
                                         }

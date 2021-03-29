@@ -4,17 +4,17 @@
 //
 //  Created by Julian Groen on 13/05/2020.
 //  Copyright © 2020 Julian Groen. All rights reserved.
-//
+// 
 
 import Foundation
 import HealthKit
 
 extension UserDefaults {
     private enum Key: String {
-        case glucoseUnit    = "com.libre2client.glucose.unit"
-        case glucoseSync    = "com.libre2client.glucose.sync"
+        case glucoseUnit = "com.libre2client.glucose.unit"
+        case glucoseSync = "com.libre2client.glucose.sync"
     }
-    
+
     var glucoseSync: Bool {
         get {
             return optional(forKey: Key.glucoseSync.rawValue) ?? true
@@ -23,7 +23,7 @@ extension UserDefaults {
             set(newValue, forKey: Key.glucoseSync.rawValue)
         }
     }
-    
+
     var glucoseUnit: HKUnit? {
         get {
             if let textUnit = string(forKey: Key.glucoseUnit.rawValue) {
@@ -42,5 +42,4 @@ extension UserDefaults {
             }
         }
     }
-    
 }

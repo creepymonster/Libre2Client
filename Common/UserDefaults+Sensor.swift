@@ -4,7 +4,7 @@
 //
 //  Created by Reimar Metzen on 05.03.21.
 //  Copyright © 2021 Mark Wilson. All rights reserved.
-//
+// 
 
 import Foundation
 
@@ -17,7 +17,7 @@ extension UserDefaults {
         case sensorState = "com.libre2client.sensor.sensorState"
         case lastSensorAge = "com.libre2client.sensor.lastSensorAge"
     }
-    
+
     var sensorUnlockCount: UInt16? {
         get {
             return UInt16(integer(forKey: Key.sensorUnlockCount.rawValue))
@@ -113,7 +113,7 @@ extension UserDefaults {
             }
         }
     }
-    
+
     var sensorType: SensorType? {
         get {
             if let patchInfo = UserDefaults.standard.sensorPatchInfo {

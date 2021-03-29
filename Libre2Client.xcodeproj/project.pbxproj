@@ -45,9 +45,10 @@
 		E223D4952608860500273607 /* LoopKitUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E223D489260885EB00273607 /* LoopKitUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E223D499260886DC00273607 /* SensorConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E223D498260886DC00273607 /* SensorConnectionState.swift */; };
 		E223D49A260886DC00273607 /* SensorConnectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E223D498260886DC00273607 /* SensorConnectionState.swift */; };
+		E22718772611C7080068A1F3 /* Libre2Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = E22718762611C7080068A1F3 /* Libre2Link.swift */; };
 		E244447625E67664007D6354 /* SensorCalibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E244447525E67664007D6354 /* SensorCalibration.swift */; };
 		E2586EB426078EA800AF1CAA /* PreLibre.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2586EB326078EA800AF1CAA /* PreLibre.swift */; };
-		E298AD2825F2795600F739F7 /* Sensor+Libre2.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298AD2725F2795600F739F7 /* Sensor+Libre2.swift */; };
+		E298AD2825F2795600F739F7 /* Libre2Sensor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E298AD2725F2795600F739F7 /* Libre2Sensor.swift */; };
 		E2A8928F260F9B43004095D7 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A8928E260F9B43004095D7 /* Logging.swift */; };
 		E2A89290260F9B43004095D7 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A8928E260F9B43004095D7 /* Logging.swift */; };
 		E2A89293260F9B80004095D7 /* StreamReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2A89292260F9B80004095D7 /* StreamReader.swift */; };
@@ -121,9 +122,10 @@
 		E223D488260885EB00273607 /* LoopKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E223D489260885EB00273607 /* LoopKitUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LoopKitUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E223D498260886DC00273607 /* SensorConnectionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorConnectionState.swift; sourceTree = "<group>"; };
+		E22718762611C7080068A1F3 /* Libre2Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Libre2Link.swift; sourceTree = "<group>"; };
 		E244447525E67664007D6354 /* SensorCalibration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorCalibration.swift; sourceTree = "<group>"; };
 		E2586EB326078EA800AF1CAA /* PreLibre.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreLibre.swift; sourceTree = "<group>"; };
-		E298AD2725F2795600F739F7 /* Sensor+Libre2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sensor+Libre2.swift"; sourceTree = "<group>"; };
+		E298AD2725F2795600F739F7 /* Libre2Sensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Libre2Sensor.swift; sourceTree = "<group>"; };
 		E2A8928E260F9B43004095D7 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		E2A89292260F9B80004095D7 /* StreamReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamReader.swift; sourceTree = "<group>"; };
 		E2A9691725F7AB5B00CA01E5 /* SensorSerialNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorSerialNumber.swift; sourceTree = "<group>"; };
@@ -247,6 +249,15 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		E22718722611B10E0068A1F3 /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				E22718762611C7080068A1F3 /* Libre2Link.swift */,
+				E298AD2725F2795600F739F7 /* Libre2Sensor.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
 		E2A8928D260F9B25004095D7 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,7 +284,7 @@
 			children = (
 				0A1E33D624695FA800BE6410 /* SensorManager.swift */,
 				0A1E33D124695C4C00BE6410 /* Sensor.swift */,
-				E298AD2725F2795600F739F7 /* Sensor+Libre2.swift */,
+				E22718722611B10E0068A1F3 /* Types */,
 				E2EA5EE925FB5EE400FB3835 /* Info */,
 				E2EA5EF325FB616B00FB3835 /* Calculation */,
 				E2E784A92607BB99002B66A0 /* Utility */,
@@ -435,11 +446,12 @@
 				0A2A4374246DF436009A160E /* SensorMeasurement.swift in Sources */,
 				0A1E33CE2469579F00BE6410 /* SensorState.swift in Sources */,
 				0A1E33D924695FDE00BE6410 /* SensorData.swift in Sources */,
+				E22718772611C7080068A1F3 /* Libre2Link.swift in Sources */,
 				0A127DD02472DE7900505869 /* NotificationManager.swift in Sources */,
 				0A6367FA246B77BA00C2725D /* UserDefaults+Sensor.swift in Sources */,
 				0A1E33C82468DADA00BE6410 /* Glucose.swift in Sources */,
 				0A1E33C42468D90300BE6410 /* LocalizedString.swift in Sources */,
-				E298AD2825F2795600F739F7 /* Sensor+Libre2.swift in Sources */,
+				E298AD2825F2795600F739F7 /* Libre2Sensor.swift in Sources */,
 				E223D499260886DC00273607 /* SensorConnectionState.swift in Sources */,
 				E244447625E67664007D6354 /* SensorCalibration.swift in Sources */,
 				E2FC04BA26033BE90011F49B /* SensorRegion.swift in Sources */,

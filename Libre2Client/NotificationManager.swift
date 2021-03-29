@@ -2,7 +2,7 @@
 //  NotificationManager.swift
 //  Libre2Client
 //
-//  Created by Julian Groen on 18/05/2020.
+//  Created by Julian Groen on 18/05/2020. 
 //  Copyright © 2020 Julian Groen. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ struct NotificationManager {
         case sensorExpire = "com.libre2client.notifications.sensorExpire"
         case sensorConnection = "com.libre2client.notifications.sensorConnection"
     }
-    
+
     private static func add(identifier: Identifier, content: UNMutableNotificationContent) {
         let center = UNUserNotificationCenter.current()
         let request = UNNotificationRequest(identifier: identifier.rawValue, content: content, trigger: nil)
@@ -25,8 +25,8 @@ struct NotificationManager {
         center.removePendingNotificationRequests(withIdentifiers: [identifier.rawValue])
         center.add(request)
     }
-    
-    private static func ensureCanSendNotification(_ completion: @escaping (_ canSend: Bool) -> Void ) {
+
+    private static func ensureCanSendNotification(_ completion: @escaping (_ canSend: Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             if #available (iOSApplicationExtension 12.0, *) {
                 guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
@@ -34,7 +34,7 @@ struct NotificationManager {
                     return
                 }
             } else {
-                guard settings.authorizationStatus == .authorized  else {
+                guard settings.authorizationStatus == .authorized else {
                     completion(false)
                     return
                 }
@@ -42,53 +42,76 @@ struct NotificationManager {
             completion(true)
         }
     }
-    
+
     public static func sendSensorConnectedNotification() {
         ensureCanSendNotification { ensured in
             guard ensured else {
                 return
             }
-            
+
             let notification = UNMutableNotificationContent()
             notification.title = LocalizedString("Notification Title: Sensor connected")
             notification.body = LocalizedString("Notification Body: Sensor connected")
-            notification.sound = .default
-            
+            notification.sound = .none
+
             add(identifier: .sensorConnection, content: notification)
         }
     }
-    
-    public static func sendSensorDisconnectedNotification() {
+
+    public static func sendSensorOutOfRangeDisconnectedNotification() {
+        playAlarm()
+
         ensureCanSendNotification { ensured in
             guard ensured else {
                 return
             }
-            
+
+            let notification = UNMutableNotificationContent()
+            notification.title = LocalizedString("Notification Title: Sensor out of range")
+            notification.body = LocalizedString("Notification Body: Sensor out of range")
+            notification.sound = .none
+            notification.categoryIdentifier = "alarm"
+
+            add(identifier: .sensorConnection, content: notification)
+        }
+    }
+
+    public static func sendSensorDisconnectedNotification() {
+        playAlarm()
+
+        ensureCanSendNotification { ensured in
+            guard ensured else {
+                return
+            }
+
             let notification = UNMutableNotificationContent()
             notification.title = LocalizedString("Notification Title: Sensor disconnected")
             notification.body = LocalizedString("Notification Body: Sensor disconnected")
-            notification.sound = .default
-            
+            notification.sound = .none
+            notification.categoryIdentifier = "alarm"
+
             add(identifier: .sensorConnection, content: notification)
         }
     }
-    
+
     public static func sendSensorDisconnectedNotification(error: String) {
+        playAlarm()
+
         ensureCanSendNotification { ensured in
             guard ensured else {
                 return
             }
-            
+
             let notification = UNMutableNotificationContent()
             notification.title = LocalizedString("Notification Title: Sensor disconnected with error")
             notification.body = String(format: LocalizedString("Notification Body: Sensor disconnected with error %@"), error)
-            notification.sound = .default
+            notification.sound = .none
             notification.categoryIdentifier = "alarm"
-            
+
             add(identifier: .sensorConnection, content: notification)
         }
     }
-    
+
     public static func sendSensorExpireNotificationIfNeeded(_ data: SensorData) {
         switch data.wearTimeMinutes {
         case let x where x >= 15840 && !(UserDefaults.standard.lastSensorAge ?? 0 >= 15840): // three days
@@ -106,38 +129,45 @@ struct NotificationManager {
         default:
             break
         }
-        
+
         UserDefaults.standard.lastSensorAge = data.wearTimeMinutes
     }
-    
+
     private static func sendSensorExpiringNotification(body: String) {
         ensureCanSendNotification { ensured in
             guard ensured else {
                 return
             }
-            
+
             let notification = UNMutableNotificationContent()
             notification.title = LocalizedString("Notification Title: Sensor ending soon")
             notification.body = body
             notification.sound = .default
-            
+
             add(identifier: .sensorExpire, content: notification)
         }
     }
-    
+
     private static func sendSensorExpiredNotification() {
         ensureCanSendNotification { ensured in
             guard ensured else {
                 return
             }
-            
+
             let notification = UNMutableNotificationContent()
             notification.title = LocalizedString("Notification Title: Sensor expired")
             notification.body = LocalizedString("Notification Body: Please replace your old sensor as soon as possible")
             notification.sound = .default
-            
+
             add(identifier: .sensorExpire, content: notification)
         }
     }
-
+    
+    private static func playVibrate() {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+    }
+    
+    private static func playAlarm() {
+        AudioServicesPlaySystemSound(1304)
+    }
 }

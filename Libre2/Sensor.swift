@@ -3,13 +3,25 @@
 //  Libre2Client
 //
 //  Created by Julian Groen on 11/05/2020.
-//  Copyright © 2020 Julian Groen. All rights reserved.
+//  Copyright © 2020 Julian Groen. All rights reserved. 
 //
 
 import Foundation
 import CoreBluetooth
 import os
 import LoopKit
+
+public func GetSensorLink() -> SensorLinkProtocol {
+    return Libre2Link()
+}
+
+public protocol SensorLinkProtocol {
+    func setupLink()
+    func linkIsSetUp() -> Bool
+    func resetLink()
+    func createLinkedSensor(_ peripheral: CBPeripheral) -> Sensor?
+    func isLinkedSensor(_ peripheral: CBPeripheral, _ advertisementData: [String: Any]) -> Bool
+}
 
 public typealias Sensor = (SensorProtocol & SensorClass)
 
@@ -20,11 +32,6 @@ public protocol SensorProtocol {
     var writeCharacteristicUuid: CBUUID { get }
     var readCharacteristicUuid: CBUUID { get }
 
-    func resetConnection()
-    func canSupportPeripheral(_ peripheral: CBPeripheral, _ advertisementData: [String: Any]) -> Bool
-    func setupConnectionIfNeeded()
-    func canConnect() -> Bool
-
     func peripheral(_ peripheral: CBPeripheral)
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService)
     func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic)
@@ -33,6 +40,7 @@ public protocol SensorProtocol {
 }
 
 public class SensorClass {
+    var identifier: String
     var readCharacteristic: CBCharacteristic?
     var writeCharacteristic: CBCharacteristic?
     var rxBuffer: Data
@@ -44,7 +52,8 @@ public class SensorClass {
 
     weak var delegate: SensorManagerDelegate?
 
-    required init() {
+    required init(with identifier: String) {
+        self.identifier = identifier
         self.timestampLastPacket = Date()
         self.rxBuffer = Data()
     }

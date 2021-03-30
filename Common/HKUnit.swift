@@ -21,9 +21,11 @@ extension HKUnit {
         if self == .millimolesPerLiter {
             return LocalizedString("mmol/L")
         }
+        
         if self == .milligramsPerDeciliter {
             return LocalizedString("mg/dL")
         }
+        
         return "?"
     }
 }

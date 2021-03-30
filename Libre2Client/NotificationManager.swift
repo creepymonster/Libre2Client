@@ -58,24 +58,6 @@ struct NotificationManager {
         }
     }
 
-    public static func sendSensorOutOfRangeDisconnectedNotification() {
-        playAlarm()
-
-        ensureCanSendNotification { ensured in
-            guard ensured else {
-                return
-            }
-
-            let notification = UNMutableNotificationContent()
-            notification.title = LocalizedString("Notification Title: Sensor out of range")
-            notification.body = LocalizedString("Notification Body: Sensor out of range")
-            notification.sound = .none
-            notification.categoryIdentifier = "alarm"
-
-            add(identifier: .sensorConnection, content: notification)
-        }
-    }
-
     public static func sendSensorDisconnectedNotification() {
         playAlarm()
 
@@ -103,8 +85,8 @@ struct NotificationManager {
             }
 
             let notification = UNMutableNotificationContent()
-            notification.title = LocalizedString("Notification Title: Sensor disconnected with error")
-            notification.body = String(format: LocalizedString("Notification Body: Sensor disconnected with error %@"), error)
+            notification.title = LocalizedString("Notification Title: Sensor connection lost")
+            notification.body = String(format: LocalizedString("Notification Body: Sensor connection lost, the following error occurred: '%@'"), error)
             notification.sound = .none
             notification.categoryIdentifier = "alarm"
 

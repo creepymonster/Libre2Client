@@ -14,7 +14,7 @@ import HealthKit
 public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     private lazy var bluetoothManager: SensorManager? = SensorManager()
 
-    public static let localizedTitle = LocalizedString("Libre 2")
+    public static let localizedTitle = LocalizedString("Libre 2", comment: "")
     public static var managerIdentifier = "Libre2Client"
     public let appURL: URL? = nil
     public let providesBLEHeartbeat = true

@@ -152,19 +152,19 @@ public class LibreManagerSettingsViewController: UITableViewController {
     override public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch Section(rawValue: section)! {
         case .latestReading:
-            return LocalizedString("Latest Reading")
+            return LocalizedString("Latest Reading", comment: "")
 
         case .sensorInfo:
-            return LocalizedString("Sensor Info")
+            return LocalizedString("Sensor Info", comment: "")
 
         case .calibrationInfo:
-            return LocalizedString("Calibration")
+            return LocalizedString("Calibration", comment: "")
 
         case .configuration:
-            return LocalizedString("Configuration")
+            return LocalizedString("Configuration", comment: "")
 
         case .actions:
-            return LocalizedString("Actions")
+            return LocalizedString("Actions", comment: "")
 
         case .delete:
             return " "
@@ -179,7 +179,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
             switch LatestReadingRow(rawValue: indexPath.row)! {
             case .glucose:
-                cell.textLabel?.text = LocalizedString("Latest Reading Glucose")
+                cell.textLabel?.text = LocalizedString("Latest Reading Glucose", comment: "")
 
                 if let quantity = cgmManager.latestReading?.quantity, let glucose = glucoseFormatter.string(from: quantity, for: glucoseUnit) {
                     cell.detailTextLabel?.text = glucose
@@ -188,7 +188,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .date:
-                cell.textLabel?.text = LocalizedString("Latest Reading Date")
+                cell.textLabel?.text = LocalizedString("Latest Reading Date", comment: "")
 
                 if let startDate = cgmManager.latestReading?.startDate {
                     cell.detailTextLabel?.text = dateFormatter.string(from: startDate)
@@ -197,7 +197,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .trend:
-                cell.textLabel?.text = LocalizedString("Latest Reading Trend")
+                cell.textLabel?.text = LocalizedString("Latest Reading Trend", comment: "")
 
                 if let trend = cgmManager.latestReading?.trendType {
                     cell.detailTextLabel?.text = trend.localizedDescription
@@ -214,7 +214,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
             switch SensorRow(rawValue: indexPath.row)! {
             case .connection:
-                cell.textLabel?.text = LocalizedString("Sensor Connection")
+                cell.textLabel?.text = LocalizedString("Sensor Connection", comment: "")
 
                 if let connection = cgmManager.connection {
                     cell.detailTextLabel?.text = connection
@@ -223,7 +223,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .age:
-                cell.textLabel?.text = LocalizedString("Sensor Age")
+                cell.textLabel?.text = LocalizedString("Sensor Age", comment: "")
 
                 if let sensorAge = cgmManager.latestReading?.sensorAge {
                     cell.detailTextLabel?.text = sensorAge
@@ -232,7 +232,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .type:
-                cell.textLabel?.text = LocalizedString("Sensor Type")
+                cell.textLabel?.text = LocalizedString("Sensor Type", comment: "")
 
                 if let sensorType = UserDefaults.standard.sensorType {
                     cell.detailTextLabel?.text = sensorType.rawValue
@@ -241,7 +241,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .region:
-                cell.textLabel?.text = LocalizedString("Sensor Region")
+                cell.textLabel?.text = LocalizedString("Sensor Region", comment: "")
 
                 if let sensorRegion = UserDefaults.standard.sensorRegion {
                     cell.detailTextLabel?.text = sensorRegion.rawValue
@@ -250,7 +250,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .state:
-                cell.textLabel?.text = LocalizedString("Sensor State")
+                cell.textLabel?.text = LocalizedString("Sensor State", comment: "")
 
                 if let sensorState = UserDefaults.standard.sensorState {
                     cell.detailTextLabel?.text = sensorState.rawValue
@@ -259,7 +259,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .uid:
-                cell.textLabel?.text = LocalizedString("Sensor UID")
+                cell.textLabel?.text = LocalizedString("Sensor UID", comment: "")
 
                 if let sensorUID = UserDefaults.standard.sensorUID {
                     cell.detailTextLabel?.text = sensorUID.hex.uppercased()
@@ -268,7 +268,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .patchInfo:
-                cell.textLabel?.text = LocalizedString("Sensor PatchInfo")
+                cell.textLabel?.text = LocalizedString("Sensor PatchInfo", comment: "")
 
                 if let sensorPatchInfo = UserDefaults.standard.sensorPatchInfo {
                     cell.detailTextLabel?.text = sensorPatchInfo.hex.uppercased()
@@ -286,7 +286,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
             switch CalibrationRow(rawValue: indexPath.row)! {
             case .i1:
-                cell.textLabel?.text = LocalizedString("Calibration: i1")
+                cell.textLabel?.text = LocalizedString("Calibration: i1", comment: "")
 
                 if let i1 = UserDefaults.standard.sensorCalibration?.i1 {
                     cell.detailTextLabel?.text = i1.description
@@ -295,7 +295,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i2:
-                cell.textLabel?.text = LocalizedString("Calibration: i2")
+                cell.textLabel?.text = LocalizedString("Calibration: i2", comment: "")
 
                 if let i2 = UserDefaults.standard.sensorCalibration?.i2 {
                     cell.detailTextLabel?.text = i2.description
@@ -304,7 +304,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i3:
-                cell.textLabel?.text = LocalizedString("Calibration: i3")
+                cell.textLabel?.text = LocalizedString("Calibration: i3", comment: "")
 
                 if let i3 = UserDefaults.standard.sensorCalibration?.i3 {
                     cell.detailTextLabel?.text = i3.description
@@ -313,7 +313,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i4:
-                cell.textLabel?.text = LocalizedString("Calibration: i4")
+                cell.textLabel?.text = LocalizedString("Calibration: i4", comment: "")
 
                 if let i4 = UserDefaults.standard.sensorCalibration?.i4 {
                     cell.detailTextLabel?.text = i4.description
@@ -322,7 +322,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i5:
-                cell.textLabel?.text = LocalizedString("Calibration: i5")
+                cell.textLabel?.text = LocalizedString("Calibration: i5", comment: "")
 
                 if let i5 = UserDefaults.standard.sensorCalibration?.i5 {
                     cell.detailTextLabel?.text = i5.description
@@ -331,7 +331,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
                 }
 
             case .i6:
-                cell.textLabel?.text = LocalizedString("Calibration: i6")
+                cell.textLabel?.text = LocalizedString("Calibration: i6", comment: "")
 
                 if let i6 = UserDefaults.standard.sensorCalibration?.i6 {
                     cell.detailTextLabel?.text = i6.description
@@ -347,7 +347,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
         case .configuration:
             let cell = tableView.dequeueIdentifiableCell(cell: SwitchTableViewCell.self, for: indexPath)
 
-            cell.textLabel?.text = LocalizedString("Nightscout Upload")
+            cell.textLabel?.text = LocalizedString("Nightscout Upload", comment: "")
             cell.selectionStyle = .none
             cell.switch?.addTarget(self, action: #selector(glucoseSyncChanged(_:)), for: .valueChanged)
             cell.switch?.isOn = UserDefaults.standard.glucoseSync
@@ -358,12 +358,12 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
             switch ActionsRow(rawValue: indexPath.row)! {
             case .resetConnection:
-                cell.textLabel?.text = LocalizedString("Reset Connection")
+                cell.textLabel?.text = LocalizedString("Reset Connection", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.isEnabled = true
                 
             case .reloadView:
-                cell.textLabel?.text = LocalizedString("Reload View")
+                cell.textLabel?.text = LocalizedString("Reload View", comment: "")
                 cell.textLabel?.textAlignment = .center
                 cell.isEnabled = true
             }
@@ -373,7 +373,7 @@ public class LibreManagerSettingsViewController: UITableViewController {
         case .delete:
             let cell = tableView.dequeueIdentifiableCell(cell: TextButtonTableViewCell.self, for: indexPath)
 
-            cell.textLabel?.text = LocalizedString("Delete CGM")
+            cell.textLabel?.text = LocalizedString("Delete CGM", comment: "")
             cell.textLabel?.textAlignment = .center
             cell.tintColor = .delete
             cell.isEnabled = true
@@ -401,14 +401,14 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
             switch ActionsRow(rawValue: indexPath.row)! {
             case .resetConnection:
-                let rescanNfcAlert = UIAlertController(title: LocalizedString("Alert title: Reset Connection"), message: LocalizedString("Alert message: Reset Connection"), preferredStyle: UIAlertControllerStyle.alert)
+                let rescanNfcAlert = UIAlertController(title: LocalizedString("Alert title: Reset Connection", comment: ""), message: LocalizedString("Alert message: Reset Connection", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
 
-                rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Ok"), style: .default, handler: { (action: UIAlertAction!) in
+                rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Ok", comment: ""), style: .default, handler: { (action: UIAlertAction!) in
                     self.cgmManager.resetConnection()
                     tableView.reloadData()
                 }))
 
-                rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Cancel"), style: .cancel))
+                rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Cancel", comment: ""), style: .cancel))
 
                 present(rescanNfcAlert, animated: true) {
                     tableView.deselectRow(at: indexPath, animated: true)
@@ -429,8 +429,8 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
 fileprivate extension UIAlertController {
     convenience init(cgmDeletionHandler handler: @escaping () -> Void) {
-        self.init(title: nil, message: LocalizedString("Are you sure you want to delete this CGM?"), preferredStyle: .actionSheet)
-        addAction(UIAlertAction(title: LocalizedString("Delete CGM"), style: .destructive) { _ in handler() })
-        addAction(UIAlertAction(title: LocalizedString("Cancel"), style: .cancel, handler: nil))
+        self.init(title: nil, message: LocalizedString("Are you sure you want to delete this CGM?", comment: ""), preferredStyle: .actionSheet)
+        addAction(UIAlertAction(title: LocalizedString("Delete CGM", comment: ""), style: .destructive) { _ in handler() })
+        addAction(UIAlertAction(title: LocalizedString("Cancel", comment: ""), style: .cancel, handler: nil))
     }
 }

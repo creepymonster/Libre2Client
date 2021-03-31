@@ -108,7 +108,7 @@ enum Log {
         let allLogsFileURL: URL = {
             let fileManager = FileManager.default
             let baseURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Logs")
-            return baseURL.appendingPathComponent("Libre2Client__AllLogs.txt")
+            return baseURL.appendingPathComponent("Libre2Client__AllLogs.log")
         }()
 
         func log(_ logMessage: String, logType: OSLogType, file: String? = nil, line: Int? = nil, function: String? = nil) {
@@ -204,7 +204,7 @@ enum Log {
         }
 
         private func makeReadFileHandle(with logType: OSLogType) -> FileHandle? {
-            let logFileURL = logFileBaseURL.appendingPathComponent("\(logType.title).log")
+            let logFileURL = logFileBaseURL.appendingPathComponent("Libre2Client__\(logType.title).log")
             return makeReadFileHandle(with: logFileURL)
         }
 

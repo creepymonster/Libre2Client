@@ -91,7 +91,7 @@ public class Libre2Sensor: Sensor {
                     let measurements = Libre2.parseBLEData(decryptedBLE, calibration: sensorCalibration)
 
                     for trendMeasurement in measurements.trend {
-                        Log.debug("Did update value, Trend: \(trendMeasurement.description)", log: .sensor)
+                        Log.debug("Did update value, Trend: \(trendMeasurement.description) \(UserDefaults.standard.glucoseUnit?.description)", log: .sensor)
                     }
 
                     let sensorData = SensorData(bytes: decryptedBLE, sensorUID: sensorUID, patchInfo: patchInfo, calibration: sensorCalibration, wearTimeMinutes: measurements.wearTimeMinutes, trend: measurements.trend, history: measurements.history)

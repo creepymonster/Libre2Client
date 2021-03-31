@@ -152,7 +152,11 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
             sensorLink.setupLink()
         }
 
-        disconnect(stayConnected: true)
+        if state == .connected || state == .notifying {
+            disconnect(stayConnected: true)
+        } else {
+            scanAfterDelay()
+        }
     }
 
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {

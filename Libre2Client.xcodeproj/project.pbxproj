@@ -31,9 +31,7 @@
 		0A63681E246C9B7500C2725D /* AnnotatedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A63681D246C9B7500C2725D /* AnnotatedTableViewCell.swift */; };
 		0A636820246C9FFA00C2725D /* UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A63681F246C9FFA00C2725D /* UITableView.swift */; };
 		0A636824246CBC2D00C2725D /* UIColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A636823246CBC2D00C2725D /* UIColor.swift */; };
-		0A7737562472AB4E00DD4CFC /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7737552472AB4E00DD4CFC /* Double.swift */; };
 		0A77375C2472B11A00DD4CFC /* HKUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6367EE246A9F1300C2725D /* HKUnit.swift */; };
-		0A77375D2472B21500DD4CFC /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7737552472AB4E00DD4CFC /* Double.swift */; };
 		43A8EC95210E67B000A81379 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43A8EC94210E67B000A81379 /* HealthKit.framework */; };
 		43AB511B21330D1400B3D58D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43AB511921330D1400B3D58D /* Localizable.strings */; };
 		43AB5127213315D300B3D58D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43AB5125213315D300B3D58D /* Localizable.strings */; };
@@ -111,7 +109,6 @@
 		0A63681D246C9B7500C2725D /* AnnotatedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotatedTableViewCell.swift; sourceTree = "<group>"; };
 		0A63681F246C9FFA00C2725D /* UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableView.swift; sourceTree = "<group>"; };
 		0A636823246CBC2D00C2725D /* UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColor.swift; sourceTree = "<group>"; };
-		0A7737552472AB4E00DD4CFC /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		432B0E881CDFC3C50045347B /* Libre2Client.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Libre2Client.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		432B0E8D1CDFC3C50045347B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		43A8EC82210E664300A81379 /* Libre2ClientUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Libre2ClientUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,7 +238,6 @@
 				0A63681B246C9AA300C2725D /* IdentifiableClass.swift */,
 				0A63681F246C9FFA00C2725D /* UITableView.swift */,
 				0A636823246CBC2D00C2725D /* UIColor.swift */,
-				0A7737552472AB4E00DD4CFC /* Double.swift */,
 				E2E5B9C6260E716E002E1BD9 /* UserDefaults.swift */,
 				E2E5B9C2260E7139002E1BD9 /* UserDefaults+Glucose.swift */,
 				0A6367F9246B77BA00C2725D /* UserDefaults+Sensor.swift */,
@@ -461,7 +457,6 @@
 				0A6367EF246A9F1300C2725D /* HKUnit.swift in Sources */,
 				0A6367F4246B6C6600C2725D /* TrendCalculation.swift in Sources */,
 				E2586EB426078EA800AF1CAA /* PreLibre.swift in Sources */,
-				0A7737562472AB4E00DD4CFC /* Double.swift in Sources */,
 				0A1E33D724695FA800BE6410 /* SensorManager.swift in Sources */,
 				E2BEE45125ED393300F2EC76 /* SensorType.swift in Sources */,
 				E2FAC2C225FACAFF00FC0385 /* NFC.swift in Sources */,
@@ -478,7 +473,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A77375D2472B21500DD4CFC /* Double.swift in Sources */,
 				0A77375C2472B11A00DD4CFC /* HKUnit.swift in Sources */,
 				0A63681E246C9B7500C2725D /* AnnotatedTableViewCell.swift in Sources */,
 				E2A89290260F9B43004095D7 /* Logging.swift in Sources */,

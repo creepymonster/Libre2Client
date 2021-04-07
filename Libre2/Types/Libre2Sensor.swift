@@ -90,6 +90,10 @@ public class Libre2Sensor: Sensor {
                     let decryptedBLE = Data(try Libre2.decryptBLE(sensorUID: sensorUID, data: rxBuffer))
                     let measurements = Libre2.parseBLEData(decryptedBLE, calibration: sensorCalibration)
 
+                    for historyMeasurement in measurements.history {
+                        Log.debug("Did update value, History: \(historyMeasurement.description)", log: .sensor)
+                    }
+                    
                     for trendMeasurement in measurements.trend {
                         Log.debug("Did update value, Trend: \(trendMeasurement.description)", log: .sensor)
                     }

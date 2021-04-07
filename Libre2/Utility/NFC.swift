@@ -63,7 +63,7 @@ class LibreNFC: NSObject, NFCTagReaderSessionDelegate {
 
         accessQueue.async {
             self.session = NFCTagReaderSession(pollingOption: .iso15693, delegate: self, queue: self.nfcQueue)
-            self.session?.alertMessage = LocalizedString("Hold iPhone near sensor")
+            self.session?.alertMessage = LocalizedString("Hold iPhone near sensor", comment: "")
             self.session?.begin()
         }
     }

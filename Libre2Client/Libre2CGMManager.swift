@@ -11,16 +11,20 @@ import LoopKit
 import LoopKitUI
 import HealthKit
 
+public protocol Libre2CGMManagerDelegate: class {
+    func cgmManagerUpdate()
+}
+
 public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     private lazy var bluetoothManager: SensorManager? = SensorManager()
 
-    public static let localizedTitle = LocalizedString("Libre 2")
+    public static let localizedTitle = LocalizedString("Libre 2", comment: "")
     public static var managerIdentifier = "Libre2Client"
     public let appURL: URL? = nil
     public let providesBLEHeartbeat = true
-    public private(set) var lastConnected: Date?
     public var managedDataInterval: TimeInterval? = nil
     public let delegate = WeakSynchronizedDelegate<CGMManagerDelegate>()
+    public weak var updateDelegate: Libre2CGMManagerDelegate?
 
     public var shouldSyncToRemoteService: Bool {
         return UserDefaults.standard.glucoseSync
@@ -33,9 +37,7 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     public private(set) var latestReading: Glucose? {
         didSet {
             if let currentGlucose = latestReading {
-                DispatchQueue.main.async(execute: {
-                    UIApplication.shared.applicationIconBadgeNumber = Int(currentGlucose.glucose)
-                })
+                update(glucose: Int(currentGlucose.glucose))
             }
         }
     }
@@ -63,7 +65,6 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     }
 
     public init() {
-        lastConnected = nil
         bluetoothManager?.delegate = self
     }
 
@@ -72,12 +73,15 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     }
 
     deinit {
+        updateDelegate = nil
+        
         bluetoothManager?.disconnect(stayConnected: false)
         bluetoothManager?.delegate = nil
     }
 
     public func resetConnection() {
         bluetoothManager?.resetConnection()
+        update()
     }
 
     public func fetchNewDataIfNeeded(_ completion: @escaping (CGMResult) -> Void) {
@@ -87,14 +91,7 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     // MARK: - SensorManagerDelegate
 
     public func sensorManager(_ sensor: Sensor?, didChangeSensorConnectionState state: SensorConnectionState) {
-        switch state {
-        case .connected:
-            lastConnected = Date()
-        case .notifying:
-            lastConnected = Date()
-        default:
-            break
-        }
+        update()
     }
 
     public func sensorManager(_ sensor: Sensor?, didUpdateSensorData data: SensorData) {
@@ -116,9 +113,18 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
         delegateQueue.async {
             self.cgmManagerDelegate?.cgmManager(self, didUpdateWith: (glucoseSamples.isEmpty ? .noData : .newData(glucoseSamples)))
         }
-
-        latestReading = glucose.first //glucose.filter({ $0.isStateValid }).max { $0.startDate < $1.startDate }
-        lastConnected = Date()
+        
+        latestReading = glucose.filter({ $0.isStateValid }).max { $0.startDate < $1.startDate }
+    }
+    
+    private func update(glucose: Int? = nil) {
+        DispatchQueue.main.async {
+            if let glucose = glucose {
+                UIApplication.shared.applicationIconBadgeNumber = glucose
+            }
+            
+            self.updateDelegate?.cgmManagerUpdate()
+        }
     }
 
     private func readingToGlucose(_ data: SensorData) -> [Glucose]? {
@@ -139,7 +145,6 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
     public var debugDescription: String {
         return [
             "## \(String(describing: type(of: self)))",
-            "lastConnected: \(String(describing: lastConnected))",
             "latestReading: \(String(describing: latestReading))",
             "connectionState: \(String(describing: connection))",
             "shouldSyncToRemoteService: \(String(describing: shouldSyncToRemoteService))",
@@ -151,7 +156,7 @@ public class Libre2CGMManager: CGMManager, SensorManagerDelegate {
 
 // MARK: - Libre2CGMManager
 
-extension Libre2CGMManager {
+extension Libre2CGMManager {  
     public var manufacturer: String? {
         return bluetoothManager?.sensor?.manufacturer
     }
@@ -173,9 +178,9 @@ extension Libre2CGMManager {
             name: "Libre2Client",
             manufacturer: manufacturer,
             model: hardwareVersion,
-            hardwareVersion: hardwareVersion,
-            firmwareVersion: hardwareVersion,
-            softwareVersion: hardwareVersion,
+            hardwareVersion: nil,
+            firmwareVersion: nil,
+            softwareVersion: nil,
             localIdentifier: identifier,
             udiDeviceIdentifier: nil
         )

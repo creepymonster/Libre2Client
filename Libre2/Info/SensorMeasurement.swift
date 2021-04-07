@@ -44,7 +44,7 @@ public struct SensorMeasurement {
     }
 
     public var description: String {
-        return "\(value.description)"
+        return "\(value.description) \(date.debugDescription)"
     }
 }
 

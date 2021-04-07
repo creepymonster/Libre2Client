@@ -19,11 +19,13 @@ extension HKUnit {
 
     var localizedDescription: String {
         if self == .millimolesPerLiter {
-            return LocalizedString("mmol/L")
+            return LocalizedString("mmol/L", comment: "")
         }
+        
         if self == .milligramsPerDeciliter {
-            return LocalizedString("mg/dL")
+            return LocalizedString("mg/dL", comment: "")
         }
+        
         return "?"
     }
 }

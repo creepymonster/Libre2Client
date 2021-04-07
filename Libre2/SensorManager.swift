@@ -20,7 +20,6 @@ public protocol SensorManagerDelegate: class {
 
 public class SensorManager: NSObject {
     private static let unknownOutput = "-"
-    private static let outOfRangeHeuristics: Set<CBError.Code> = [.unknown, .connectionTimeout, .peripheralDisconnected, .connectionFailed]
 
     private var stayConnected = true
     private var manager: CBCentralManager! = nil
@@ -153,7 +152,11 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
             sensorLink.setupLink()
         }
 
-        disconnect(stayConnected: true)
+        if state == .connected || state == .notifying {
+            disconnect(stayConnected: true)
+        } else {
+            scanAfterDelay()
+        }
     }
 
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -220,16 +223,8 @@ extension SensorManager: CBCentralManagerDelegate, CBPeripheralDelegate {
 
         if let error = error?.localizedDescription {
             Log.error("Did disconnect peripheral, error code: '\(error)'", log: .sensorManager)
-        }
-
-        if let error = error, (error as NSError).domain == CBErrorDomain, let code = CBError.Code(rawValue: (error as NSError).code), SensorManager.outOfRangeHeuristics.contains(code) {
-            NotificationManager.sendSensorOutOfRangeDisconnectedNotification()
-
-            manager.connect(peripheral, options: nil)
-            state = .connecting
-        } else if let error = error?.localizedDescription {
             NotificationManager.sendSensorDisconnectedNotification(error: error)
-
+            
             manager.connect(peripheral, options: nil)
             state = .connecting
         } else {

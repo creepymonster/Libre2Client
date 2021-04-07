@@ -18,7 +18,7 @@ public protocol LibreDirectCGMManagerDelegate: class {
 public class LibreDirectCGMManager: CGMManager, SensorManagerDelegate {
     private lazy var bluetoothManager: SensorManager? = SensorManager()
 
-    public static let localizedTitle = LocalizedString("Libre 2", comment: "")
+    public static let localizedTitle = LocalizedString("Libre Direct", comment: "")
     public static var managerIdentifier = "LibreDirectClient"
     public let appURL: URL? = nil
     public let providesBLEHeartbeat = true

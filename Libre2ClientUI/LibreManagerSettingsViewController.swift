@@ -12,7 +12,7 @@ import Libre2Client
 import UIKit
 import HealthKit
 
-public class LibreManagerSettingsViewController: UITableViewController {
+public class LibreManagerSettingsViewController: UITableViewController, Libre2CGMManagerDelegate {
     public let cgmManager: Libre2CGMManager
     public let glucoseUnit: HKUnit
     public let allowsDeletion: Bool
@@ -39,6 +39,10 @@ public class LibreManagerSettingsViewController: UITableViewController {
         super.init(style: .grouped)
     }
     
+    deinit {
+        self.cgmManager.updateDelegate = nil
+    }
+    
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         tableView.reloadData()
     }
@@ -63,6 +67,8 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
         let button = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped(_:)))
         navigationItem.setRightBarButton(button, animated: false)
+        
+        self.cgmManager.updateDelegate = self
     }
 
     override public func viewWillAppear(_ animated: Bool) {
@@ -82,6 +88,10 @@ public class LibreManagerSettingsViewController: UITableViewController {
 
     @objc func glucoseSyncChanged(_ sender: UISwitch) {
         UserDefaults.standard.glucoseSync = sender.isOn
+    }
+    
+    public func cgmManagerUpdate() {
+        tableView.reloadData()
     }
 
     // MARK: - UITableViewDataSource
@@ -398,14 +408,12 @@ public class LibreManagerSettingsViewController: UITableViewController {
             }
 
         case .actions:
-
             switch ActionsRow(rawValue: indexPath.row)! {
             case .resetConnection:
                 let rescanNfcAlert = UIAlertController(title: LocalizedString("Alert title: Reset Connection", comment: ""), message: LocalizedString("Alert message: Reset Connection", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
 
                 rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Ok", comment: ""), style: .default, handler: { (action: UIAlertAction!) in
                     self.cgmManager.resetConnection()
-                    tableView.reloadData()
                 }))
 
                 rescanNfcAlert.addAction(UIAlertAction(title: LocalizedString("Cancel", comment: ""), style: .cancel))

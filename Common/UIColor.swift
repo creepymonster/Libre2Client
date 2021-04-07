@@ -1,6 +1,6 @@
 //
 //  UIColor.swift
-//  Libre2ClientUI
+//  LibreDirectClientUI
 //
 //  Created by Julian Groen on 14/05/2020.
 //  Copyright © 2020 Julian Groen. All rights reserved.

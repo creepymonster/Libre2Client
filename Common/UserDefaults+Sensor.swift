@@ -1,6 +1,6 @@
 //
 //  UserDefaults+Sensor.swift
-//  Libre2Client
+//  LibreDirectClient
 //
 //  Created by Reimar Metzen on 05.03.21.
 //  Copyright © 2021 Mark Wilson. All rights reserved.
@@ -10,12 +10,12 @@ import Foundation
 
 extension UserDefaults {
     private enum Key: String, CaseIterable {
-        case sensorUnlockCount = "com.libre2client.sensor.sensorUnlockCount"
-        case sensorUID = "com.libre2client.sensor.sensorUID"
-        case sensorPatchInfo = "com.libre2client.sensor.sensorPatchInfo"
-        case sensorCalibration = "com.libre2client.sensor.sensorCalibrationInfo"
-        case sensorState = "com.libre2client.sensor.sensorState"
-        case lastSensorAge = "com.libre2client.sensor.lastSensorAge"
+        case sensorUnlockCount = "com.LibreDirectClient.sensor.sensorUnlockCount"
+        case sensorUID = "com.LibreDirectClient.sensor.sensorUID"
+        case sensorPatchInfo = "com.LibreDirectClient.sensor.sensorPatchInfo"
+        case sensorCalibration = "com.LibreDirectClient.sensor.sensorCalibrationInfo"
+        case sensorState = "com.LibreDirectClient.sensor.sensorState"
+        case lastSensorAge = "com.LibreDirectClient.sensor.lastSensorAge"
     }
 
     var sensorUnlockCount: UInt16? {

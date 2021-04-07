@@ -1,6 +1,6 @@
 //
 //  Collection+Array.swift
-//  Libre2Client
+//  LibreDirectClient
 //
 //  Created by Julian Groen on 13/05/2020.
 //  Copyright © 2020 Julian Groen. All rights reserved.

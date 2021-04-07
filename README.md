@@ -1,4 +1,4 @@
-# Libre2Client
+# LibreDirectClient
 This is a CGMManager for direct integration of Libre2 into Loop.
 
 **Warning, in its current state the project is strictly for my personal use and is highly experimental.**

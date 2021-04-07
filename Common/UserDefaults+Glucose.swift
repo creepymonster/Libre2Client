@@ -1,6 +1,6 @@
 //
 //  UserDefaults+Glucose.swift
-//  Libre2Client
+//  LibreDirectClient
 //
 //  Created by Julian Groen on 13/05/2020.
 //  Copyright © 2020 Julian Groen. All rights reserved.
@@ -11,8 +11,8 @@ import HealthKit
 
 extension UserDefaults {
     private enum Key: String {
-        case glucoseUnit = "com.libre2client.glucose.unit"
-        case glucoseSync = "com.libre2client.glucose.sync"
+        case glucoseUnit = "com.LibreDirectClient.glucose.unit"
+        case glucoseSync = "com.LibreDirectClient.glucose.sync"
     }
 
     var glucoseSync: Bool {
